@@ -82,15 +82,8 @@ Single `bq.csv` file is created and contains simple statistics for all fetched r
 This file is used in the [Fetch GitHub Action queue](.github/workflows/fetch-github-actions-queue.yml)
 to efficiently upload data to BigQuery table.
 
-CSV file headers: `repository_owner`, `repository_name`, `queued`, `in_progress`, `in_progress`.
+CSV file headers: `workflow_id`, `status`, `created_at`, `timestamp`.
 
-Example content:
-
-```csv
-repository_owner,repository_name,queued,in_progress,timestamp
-apache,airflow,1,3,2020-11-19 17:53:24.139806+00:00
-apache,beam,0,1,2020-11-19 17:53:39.171882+00:00
-```
 
 #### Processing existing json files to csv and pushing it to BigQuery
 

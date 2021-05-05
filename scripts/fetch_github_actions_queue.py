@@ -35,10 +35,9 @@ import requests
 GITHUB_TOKEN: str = os.environ["GITHUB_TOKEN"]
 REPO_WORKFLOWS_URL_FMT: str = "https://api.github.com/repos/{owner}/{repo}/actions/runs"
 CSV_FIELDNAMES = [
-    "repository_owner",
-    "repository_name",
-    "queued",
-    "in_progress",
+    "workflow_id",
+    "status",
+    "created_at",
     "timestamp",
 ]
 
@@ -102,15 +101,16 @@ def fetch_github_actions_queue(
             workflows, status_count, timestamp = fetch_repo_queue(owner, repo)
             queued = status_count["queued"]
             in_progress = status_count["in_progress"]
-            csv_data = {
-                "repository_name": repo,
-                "repository_owner": owner,
-                "queued": in_progress,
-                "in_progress": queued,
-                "timestamp": timestamp,
-            }
+            for workflow in workflows:
+                csv_data = {
+                    "workflow_id": workflow.get('id'),
+                    "status": workflow.get('status'),
+                    "created_at": workflow.get('created_at'),
+                    "timestamp": timestamp,
+                }
+                writer.writerow(csv_data)
+
             print(f"{owner}/{repo}: {in_progress}, {queued}")
-            writer.writerow(csv_data)
 
             directory = os.path.join(output_dir, owner, repo)
             filename = os.path.join(
